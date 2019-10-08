@@ -26,5 +26,4 @@ func main() {
     bf.Test([]byte("hey")) //=> false
     bf.Test([]byte("!!!")) //=> false
 }
-
 ```

@@ -36,3 +36,12 @@ func TestNew(t *testing.T) {
 		t.Errorf("expected false, got true\n")
 	}
 }
+
+func BenchmarkBloomFilter_Add(b *testing.B) {
+	size := uint(1024)
+	bf := bloomfilter.New(size)
+
+	for i := 0; i < b.N; i++ {
+		bf.Add([]byte("foo"))
+	}
+}
