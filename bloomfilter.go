@@ -50,10 +50,11 @@ func (bf *BloomFilter) Size() uint {
 func (bf *BloomFilter) Add(item []byte) {
 	hashes := bf.hash(item)
 
-	fmt.Printf("hashes: %+v\n", hashes)
-
 	for i := uint(0); i < bf.k; i++ {
-		pos := uint(hashes[i]) % bf.m
+		pos := bf.position(i, hashes)
+
+		// it does not matter whether the position is already true,
+		// because the Bloom Filter is a data structure which tolerates false-positive.
 		bf.bitVector[pos] = true
 	}
 
@@ -65,7 +66,10 @@ func (bf *BloomFilter) Test(item []byte) bool {
 	hashes := bf.hash(item)
 
 	for i := uint(0); i < bf.k; i++ {
-		pos := uint(hashes[i]) % bf.m
+		pos := bf.position(i, hashes)
+
+		// the Bloom Filter will never accepts false-negative,
+		// so once it finds the missing position, return false.
 		if !bf.bitVector[pos] {
 			return false
 		}
@@ -78,6 +82,7 @@ func (bf *BloomFilter) Test(item []byte) bool {
 //-------------------------------
 // private interface
 //-------------------------------
+
 func (bf *BloomFilter) hash(item []byte) []uint64 {
 	var values []uint64
 
@@ -88,4 +93,12 @@ func (bf *BloomFilter) hash(item []byte) []uint64 {
 	}
 
 	return values
+}
+
+// position calculates the index of bit vector by modulo.
+//
+// Using modulo is because the hash value might be too big to be stored
+// in the bit vector.
+func (bf *BloomFilter) position(idx uint, hashes []uint64) uint {
+	return uint(hashes[idx]) % bf.m
 }
