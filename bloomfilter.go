@@ -6,9 +6,8 @@ package bloomfilter provides probabilistic data structure called "Bloom filter".
 package bloomfilter
 
 import (
-	"fmt"
+	"github.com/spaolacci/murmur3"
 	"hash"
-	"hash/fnv"
 )
 
 //-------------------------------
@@ -26,18 +25,12 @@ type BloomFilter struct {
 }
 
 func New(size uint) *BloomFilter {
-	hashFn := []hash.Hash64{
-		fnv.New64(),
-		fnv.New64(),
-		fnv.New64(),
-	}
-
 	return &BloomFilter{
 		bitVector: make([]bool, size),
 		n: uint(0),
 		m: size,
 		k: 3,
-		hashFn: hashFn,
+		hashFn: buildHashFn(),
 	}
 }
 
@@ -82,6 +75,22 @@ func (bf *BloomFilter) Test(item []byte) bool {
 //-------------------------------
 // private interface
 //-------------------------------
+
+/**
+This package choose Murmur3 as our hash function, by considering Java's Bloom Filter libraries' analysis.
+Murmur3 can be faster than any other cryptographic hash functions like MD5,
+and can have a satisfactory trade-off between speed and its distribution of hash values.
+
+@see https://stackoverflow.com/a/40343867
+@see https://github.com/Baqend/Orestes-Bloomfilter#hash-functions
+ */
+func buildHashFn() []hash.Hash64 {
+	return []hash.Hash64{
+		murmur3.New64(),
+		murmur3.New64(),
+		murmur3.New64(),
+	}
+}
 
 func (bf *BloomFilter) hash(item []byte) []uint64 {
 	var values []uint64
