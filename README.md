@@ -1,5 +1,8 @@
 # go-bloomfilter
 
+[![Go Report Card](https://goreportcard.com/badge/github.com/kenju/go-bloomfilter)](https://goreportcard.com/report/github.com/kenju/go-bloomfilter)
+[![GoDoc](https://godoc.org/github.com/kenju/go-bloomfilter?status.svg)](http://godoc.org/github.com/kenju/go-bloomfilter)
+
 ## Usage
 
 ```go
