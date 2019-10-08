@@ -11,10 +11,6 @@ LDFLAGS := -s -w -X 'main.version=$(VERSION)' -X 'main.revision=$(REVISION)'
 help:
 	@make2help $(MAKEFILE_LIST)
 
-## Run built binaries
-run: build
-	./app
-
 ## Run tests
 test:
 	gotest ./... -v
